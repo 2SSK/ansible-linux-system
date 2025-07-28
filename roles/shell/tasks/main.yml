@@ -31,3 +31,9 @@
     repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
     dest: "{{ zsh_custom }}/plugins/zsh-syntax-highlighting"
   become_user: "{{ user }}"
+
+- name: Install Starship
+  shell: |
+    curl -fsSL https://starship.rs/install.sh | sh -s -- -y
+  args:
+    creates: /usr/local/bin/starship
