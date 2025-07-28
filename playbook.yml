@@ -1,0 +1,26 @@
+---
+- hosts: server
+  become: true
+
+  pre_tasks:
+    - name: update repo cache
+      tags: always
+      apt:
+        update_cache: yes
+      changed_when: false
+
+    - name: install git, curl, and stow
+      package:
+        name:
+          - git
+          - curl
+          - stow
+
+    - name: git clone dotfiles
+      git:
+        repo: https://github.com/2SSK/dot-files.git
+        dest: /home/{{ ansible_user }}/dotfiles
+        version: main
+
+  roles:
+    - shell
