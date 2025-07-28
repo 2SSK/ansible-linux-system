@@ -3,30 +3,25 @@
   become: true
 
   pre_tasks:
-    - name: update repo cache
+    - name: Update APT repo cache
       tags: always
       apt:
         update_cache: yes
       changed_when: false
 
-    - name: install git, curl, and stow
+    - name: Install core tools and build essentials
       package:
         name:
           - git
           - curl
           - stow
-
-    - name: git clone dotfiles
-      git:
-        repo: https://github.com/2SSK/dot-files.git
-        dest: /home/{{ ansible_user }}/dotfiles
-        version: main
-
-    - name: git clone wallpapers repo
-      git:
-        repo: https://github.com/2SSK/Wallpaper-bank.git
-        dest: /home/{{ ansible_user }}/Wallpaper-bank
-        version: main
+          - unzip
+          - wget
+          - build-essential
+          - cargo
+        state: present
 
   roles:
+    - common
     - shell
+    - cli

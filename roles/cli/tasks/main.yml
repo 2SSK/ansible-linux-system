@@ -1,0 +1,14 @@
+- name: Install CLI tools via APT
+  apt:
+    name:
+      - eza
+      - zoxide
+      - bat
+      - fzf
+      - htop
+      - btop
+      - cava
+      - neofetch
+      - cmatrix
+      - tty-clock
+    state: present
