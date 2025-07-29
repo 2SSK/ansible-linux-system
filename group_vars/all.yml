@@ -5,6 +5,7 @@ package_manager: yay
 core_packages:
   - git
   - curl
+  - go
   - stow
   - unzip
   - wget
@@ -32,7 +33,6 @@ cli_packages:
 # Development Tools
 dev_packages:
   - clang
-  - go
   - tmux
   - vim
   - nodejs

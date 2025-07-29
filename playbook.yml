@@ -11,32 +11,31 @@
         update_cache: yes
       changed_when: false
 
-    - name: Install yay if not present
-      block:
-        - name: Install base-devel and git
-          pacman:
-            name:
-              - base-devel
-              - git
-            state: present
-
-        - name: Clone yay repository
-          git:
-            repo: https://aur.archlinux.org/yay.git
-            dest: /tmp/yay
-            force: yes
-
-        - name: Build and install yay
-          shell: |
-            cd /tmp/yay
-            makepkg -si --noconfirm
-          args:
-            creates: /usr/bin/yay
-
     - name: Install core packages
       pacman:
         name: "{{ core_packages }}"
         state: present
+
+    - name: Download and build yay
+      block:
+        - name: Download yay AUR snapshot
+          become: false
+          shell: |
+            mkdir -p /tmp/yay && \
+            curl -L https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz | tar -xz -C /tmp && \
+            cd /tmp/yay && makepkg -f --noconfirm
+
+        - name: Find yay package file
+          find:
+            paths: /tmp/yay
+            patterns: "yay-*.pkg.tar.zst"
+          register: yay_packages
+
+        - name: Install yay package
+          pacman:
+            name: "{{ yay_packages.files[0].path }}"
+            state: present
+          when: yay_packages.files | length > 0
 
   roles:
     - ssh
