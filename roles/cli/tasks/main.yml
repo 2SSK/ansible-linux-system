@@ -31,3 +31,11 @@
   args:
     chdir: /tmp
     creates: /usr/local/bin/yazi
+
+- name: Install ttyper via Cargo
+  shell: |
+    source $HOME/.cargo/env
+    cargo install ttyper
+    install -Dm755 "$HOME/.cargo/bin/ttyper" /usr/local/bin/ttyper
+  args:
+    creates: /usr/local/bin/ttyper
