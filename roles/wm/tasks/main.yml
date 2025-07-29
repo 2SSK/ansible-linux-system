@@ -1,0 +1,18 @@
+- name: install i3 and sway
+  package:
+    name:
+      - i3
+      - i3lock-color
+      - picom
+      - polybar
+      - rofi
+      - autotile
+      - feh
+      - scrot
+      - sway
+      - waybar
+      - swaylock
+      - swaybg
+      - wlogout
+      - grimshot
+    state: present

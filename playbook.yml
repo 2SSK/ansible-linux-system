@@ -22,10 +22,11 @@
         state: present
 
   roles:
+    - ssh
     - common
     - shell
     - cli
-    - ssh
     - dev
     - gnome
+    - wm
     - applications
