@@ -1,5 +1,5 @@
 - name: Install and start SSH server
-  apt:
-    name: openssh-server
+  pacman:
+    name: openssh
     state: present
   notify: Start SSH

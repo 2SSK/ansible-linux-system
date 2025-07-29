@@ -1,64 +1,15 @@
-- name: Install Ghostty
-  snap:
-    name: ghostty
-    classic: true
+---
+- name: Install applications via yay
+  shell: |
+    yay -S --noconfirm {{ applications | join(' ') }}
+  args:
+    creates: /usr/bin/code
+  become: true
 
-- name: Install VSCode
-  snap:
-    name: code
-    classic: true
-
-- name: Install Brave Browser
-  snap:
-    name: brave
-    classic: true
-
-- name: Install auto-cpufreq
-  snap:
-    name: auto-cpufreq
-    classic: true
-
-- name: Install Postman
-  snap:
-    name: postman
-    classic: true
-
-- name: Install WhatsApp Linux Desktop
-  snap:
-    name: whatsapp-linux-desktop
-    classic: true
-
-- name: Install Spotify
-  snap:
-    name: spotify
-    classic: true
-
-- name: Install Discord
-  snap:
-    name: discord
-    classic: true
-
-- name: Install Obsidian
-  snap:
-    name: obsidian
-    classic: true
-
-- name: Install OBS Studio
-  snap:
-    name: obs-studio
-    classic: true
-
-- name: Install VLC
-  snap:
-    name: vlc
-    classic: true
-
-- name: Install Thorium Reader
-  snap:
-    name: thorium-reader
-    classic: true
-
-- name: Install LibreOffice
-  snap:
-    name: libreoffice
-    classic: true
+- name: Load Spicetify
+  shell: |
+    spicetify backup
+    spicetify apply
+  args:
+    creates: ~/.config/spicetify/config.ini
+  become_user: "{{ ansible_user }}"

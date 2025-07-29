@@ -1,31 +1,9 @@
-- name: Install packages
-  package:
-    name:
-      - clang
-      - golang
-      - tmux
-      - vim-nox
+---
+- name: Install development packages via pacman
+  pacman:
+    name: "{{ dev_packages }}"
     state: present
-
-- name: Install Node.js (latest using PPA)
-  shell: |
-    curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
-    apt install -y nodejs
-  args:
-    creates: /usr/bin/node
-
-- name: Install npm (included with Node.js)
-  shell: |
-    apt install -y npm
-  args:
-    creates: /usr/bin/npm
-
-- name: Install Yarn (latest using PPA)
-  shell: |
-    corepack enable
-    corepack prepare yarn@stable --activate
-  args:
-    creates: /usr/bin/yarn
+    update_cache: yes
 
 - name: Install Vim-Plug for Vim
   shell: |
@@ -33,83 +11,35 @@
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   args:
     creates: ~/.vim/autoload/plug.vim
-  become: false
+  become_user: "{{ ansible_user }}"
 
 - name: Install Vim plugins via PlugInstall
   shell: |
     vim +PlugInstall +qall
   args:
     executable: /bin/bash
-
-- name: Install Neovim using Snap
-  snap:
-    name: nvim
-    classic: true
-    state: present
+  become_user: "{{ ansible_user }}"
 
 - name: Install TPM (Tmux Plugin Manager)
   git:
     repo: https://github.com/tmux-plugins/tpm
     dest: "/home/{{ ansible_user }}/.tmux/plugins/tpm"
-  become: false
+  become_user: "{{ ansible_user }}"
 
 - name: Install TPM plugins listed in .tmux.conf
   shell: "/home/{{ ansible_user }}/.tmux/plugins/tpm/bin/install_plugins"
   args:
     executable: /bin/bash
-  become: false
+  become_user: "{{ ansible_user }}"
 
-- name: Install Docker
-  shell: |
-    apt update
-    apt install -y ca-certificates curl gnupg
-    install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-      https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
-      tee /etc/apt/sources.list.d/docker.list > /dev/null
-    apt update
-    apt install -y docker-ce docker-ce-cli containerd.io
-  args:
-    creates: /usr/bin/docker
+- name: Start and enable Docker service
+  systemd:
+    name: docker
+    enabled: true
+    state: started
 
-- name: Install GitHub CLI
-  shell: |
-    type -p curl >/dev/null || apt install curl -y
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
-      gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) \
-      signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
-      https://cli.github.com/packages stable main" | \
-      tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    apt update
-    apt install -y gh
-  args:
-    creates: /usr/bin/gh
-
-- name: Install Lazygit
-  shell: |
-    curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
-    | grep "browser_download_url.*Linux_x86_64.tar.gz" \
-    | cut -d '"' -f 4 \
-    | wget -qi - -O lazygit.tar.gz
-    tar -xf lazygit.tar.gz lazygit
-    install lazygit /usr/local/bin/
-    rm -f lazygit lazygit.tar.gz
-  args:
-    chdir: /tmp
-    creates: /usr/local/bin/lazygit
-
-- name: Install Lazydocker
-  shell: |
-    curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
-    | grep "browser_download_url.*Linux_x86_64.tar.gz" \
-    | cut -d '"' -f 4 \
-    | wget -qi - -O lazydocker.tar.gz
-    tar -xf lazydocker.tar.gz lazydocker
-    install lazydocker /usr/local/bin/
-    rm -f lazydocker lazydocker.tar.gz
-  args:
-    chdir: /tmp
-    creates: /usr/local/bin/lazydocker
+- name: Add user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes

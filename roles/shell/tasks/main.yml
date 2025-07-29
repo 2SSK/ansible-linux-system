@@ -1,28 +1,27 @@
-- name: Install Zsh
-  package:
-    name: zsh
+---
+- name: Install shell packages
+  pacman:
+    name: "{{ shell_packages }}"
     state: present
+    update_cache: yes
 
 - name: Set Zsh as default shell
   user:
     name: "{{ ansible_user }}"
     shell: /bin/zsh
 
-- name: Install Oh My Zsh non-interactively
-  shell: |
-    RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  args:
-    executable: /bin/bash
-    creates: "/root/.oh-my-zsh"
-
 - name: Set variables
   set_fact:
     user: "{{ ansible_user }}"
     zsh_custom: "/home/{{ ansible_user }}/.oh-my-zsh/custom"
 
-- name: stow dotfiles
+- name: Install Oh My Zsh for user
   shell: |
-    cd /home/{{ ansible_user }}/dotfiles && stow .
+    RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  args:
+    executable: /bin/bash
+    creates: "/home/{{ ansible_user }}/.oh-my-zsh"
+  become_user: "{{ user }}"
 
 - name: Install zsh-autosuggestions
   git:
@@ -36,25 +35,14 @@
     dest: "{{ zsh_custom }}/plugins/zsh-syntax-highlighting"
   become_user: "{{ user }}"
 
-- name: Install JetBrainsMono Nerd Font
-  shell: |
-    wget -qO JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip
-    unzip -q JetBrainsMono.zip -d /usr/local/share/fonts/JetBrainsMono
-    fc-cache -f -v
-    rm -f JetBrainsMono.zip
-  args:
-    chdir: /tmp
-    creates: /usr/local/share/fonts/JetBrainsMono
-
 - name: Install Starship
   shell: |
     curl -fsSL https://starship.rs/install.sh | sh -s -- -y
   args:
     creates: /usr/local/bin/starship
+  become_user: "{{ user }}"
 
-- name: Install xsel and wl-clipboard
-  package:
-    name:
-      - xsel
-      - wl-clipboard
-    state: present
+- name: Stow dotfiles
+  shell: |
+    cd /home/{{ ansible_user }}/dotfiles && stow .
+  become_user: "{{ user }}"

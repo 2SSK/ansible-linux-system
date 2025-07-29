@@ -1,24 +1,41 @@
 ---
 - hosts: local
   become: true
+  vars_files:
+    - group_vars/all.yml
 
   pre_tasks:
-    - name: Update APT repo cache
+    - name: Update package cache
       tags: always
-      apt:
+      pacman:
         update_cache: yes
       changed_when: false
 
-    - name: Install core tools and build essentials
-      package:
-        name:
-          - git
-          - curl
-          - stow
-          - unzip
-          - wget
-          - build-essential
-          - cargo
+    - name: Install yay if not present
+      block:
+        - name: Install base-devel and git
+          pacman:
+            name:
+              - base-devel
+              - git
+            state: present
+
+        - name: Clone yay repository
+          git:
+            repo: https://aur.archlinux.org/yay.git
+            dest: /tmp/yay
+            force: yes
+
+        - name: Build and install yay
+          shell: |
+            cd /tmp/yay
+            makepkg -si --noconfirm
+          args:
+            creates: /usr/bin/yay
+
+    - name: Install core packages
+      pacman:
+        name: "{{ core_packages }}"
         state: present
 
   roles:
