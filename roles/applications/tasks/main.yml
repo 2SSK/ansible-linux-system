@@ -23,14 +23,9 @@
     name: postman
     classic: true
 
-- name: Install MongoDB Compass
-  snap:
-    name: mongodb-compass
-    classic: true
-
 - name: Install WhatsApp Linux Desktop
   snap:
-    name: whatsapp-for-linux
+    name: whatsapp-linux-desktop
     classic: true
 
 - name: Install Spotify
@@ -38,19 +33,9 @@
     name: spotify
     classic: true
 
-- name: Install Spicetify
-  snap:
-    name: spicetify
-    classic: true
-
 - name: Install Discord
   snap:
     name: discord
-    classic: true
-
-- name: Install Waypaper
-  snap:
-    name: waypaper
     classic: true
 
 - name: Install Obsidian

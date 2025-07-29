@@ -26,6 +26,6 @@
     # - shell
     # - cli
     # - ssh
-    - dev
+    # - dev
     # - gnome
-    # - applications
+    - applications
