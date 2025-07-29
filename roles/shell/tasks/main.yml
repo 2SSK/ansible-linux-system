@@ -20,6 +20,10 @@
     user: "{{ ansible_user }}"
     zsh_custom: "/home/{{ ansible_user }}/.oh-my-zsh/custom"
 
+- name: stow dotfiles
+  shell: |
+    cd /home/{{ ansible_user }}/dotfiles && stow .
+
 - name: Install zsh-autosuggestions
   git:
     repo: https://github.com/zsh-users/zsh-autosuggestions.git
