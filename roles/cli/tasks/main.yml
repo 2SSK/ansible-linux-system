@@ -1,5 +1,5 @@
 - name: Install CLI tools via APT
-  apt:
+  package:
     name:
       - eza
       - zoxide
@@ -12,3 +12,22 @@
       - cmatrix
       - tty-clock
     state: present
+
+- name: Install Fastfetch using PPA
+  shell: |
+    add-apt-repository -y ppa:zhangsongcui3371/fastfetch
+    apt update
+    apt install -y fastfetch
+  args:
+    creates: /usr/bin/fastfetch
+
+- name: Install Yazi
+  shell: |
+    wget -qO yazi.zip https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-gnu.zip
+    unzip -q yazi.zip -d yazi-temp
+    find yazi-temp -type f -name ya -exec install {} /usr/local/bin/ \;
+    find yazi-temp -type f -name yazi -exec install {} /usr/local/bin/ \;
+    rm -rf yazi.zip yazi-temp
+  args:
+    chdir: /tmp
+    creates: /usr/local/bin/yazi
