@@ -1,0 +1,8 @@
+- name: Restart GNOME Shell
+  shell: |
+    if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+      busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'Meta.restart("Restarting…")'
+    else
+      killall -HUP gnome-shell
+    fi
+  listen: "restart gnome-shell"

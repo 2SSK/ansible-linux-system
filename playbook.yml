@@ -22,8 +22,9 @@
         state: present
 
   roles:
-    - common
-    - shell
-    - cli
-    - dev
-    - ssh
+    # - common
+    # - shell
+    # - cli
+    # - dev
+    # - ssh
+    - gnome
