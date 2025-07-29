@@ -47,3 +47,10 @@
     curl -fsSL https://starship.rs/install.sh | sh -s -- -y
   args:
     creates: /usr/local/bin/starship
+
+- name: Install xsel and wl-clipboard
+  package:
+    name:
+      - xsel
+      - wl-clipboard
+    state: present
