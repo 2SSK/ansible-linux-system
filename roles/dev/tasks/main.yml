@@ -35,14 +35,26 @@
     creates: ~/.vim/autoload/plug.vim
   become: false
 
+- name: Install Vim plugins via PlugInstall
+  shell: |
+    vim +PlugInstall +qall
+  args:
+    executable: /bin/bash
+
 - name: Install Neovim using Snap
   snap:
     name: nvim
     classic: true
     state: present
 
+- name: Install TPM (Tmux Plugin Manager)
+  git:
+    repo: https://github.com/tmux-plugins/tpm
+    dest: "/home/{{ ansible_user }}/.tmux/plugins/tpm"
+  become: false
+
 - name: Install TPM plugins listed in .tmux.conf
-  shell: ~/.tmux/plugins/tpm/bin/install_plugins
+  shell: "/home/{{ ansible_user }}/.tmux/plugins/tpm/bin/install_plugins"
   args:
     executable: /bin/bash
   become: false
