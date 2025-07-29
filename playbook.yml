@@ -1,5 +1,5 @@
 ---
-- hosts: server
+- hosts: local
   become: true
 
   pre_tasks:
@@ -22,9 +22,10 @@
         state: present
 
   roles:
-    # - common
-    # - shell
-    # - cli
-    # - dev
-    # - ssh
+    - common
+    - shell
+    - cli
+    - dev
+    - ssh
     - gnome
+    - applications

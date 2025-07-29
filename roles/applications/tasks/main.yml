@@ -1,0 +1,79 @@
+- name: Install Ghostty
+  snap:
+    name: ghostty
+    classic: true
+
+- name: Install VSCode
+  snap:
+    name: code
+    classic: true
+
+- name: Install Brave Browser
+  snap:
+    name: brave
+    classic: true
+
+- name: Install auto-cpufreq
+  snap:
+    name: auto-cpufreq
+    classic: true
+
+- name: Install Postman
+  snap:
+    name: postman
+    classic: true
+
+- name: Install MongoDB Compass
+  snap:
+    name: mongodb-compass
+    classic: true
+
+- name: Install WhatsApp Linux Desktop
+  snap:
+    name: whatsapp-for-linux
+    classic: true
+
+- name: Install Spotify
+  snap:
+    name: spotify
+    classic: true
+
+- name: Install Spicetify
+  snap:
+    name: spicetify
+    classic: true
+
+- name: Install Discord
+  snap:
+    name: discord
+    classic: true
+
+- name: Install Waypaper
+  snap:
+    name: waypaper
+    classic: true
+
+- name: Install Obsidian
+  snap:
+    name: obsidian
+    classic: true
+
+- name: Install OBS Studio
+  snap:
+    name: obs-studio
+    classic: true
+
+- name: Install VLC
+  snap:
+    name: vlc
+    classic: true
+
+- name: Install Thorium Reader
+  snap:
+    name: thorium-reader
+    classic: true
+
+- name: Install LibreOffice
+  snap:
+    name: libreoffice
+    classic: true
