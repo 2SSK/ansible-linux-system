@@ -32,6 +32,16 @@
     dest: "{{ zsh_custom }}/plugins/zsh-syntax-highlighting"
   become_user: "{{ user }}"
 
+- name: Install JetBrainsMono Nerd Font
+  shell: |
+    wget -qO JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip
+    unzip -q JetBrainsMono.zip -d /usr/local/share/fonts/JetBrainsMono
+    fc-cache -f -v
+    rm -f JetBrainsMono.zip
+  args:
+    chdir: /tmp
+    creates: /usr/local/share/fonts/JetBrainsMono
+
 - name: Install Starship
   shell: |
     curl -fsSL https://starship.rs/install.sh | sh -s -- -y

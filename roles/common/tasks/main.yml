@@ -3,9 +3,11 @@
     repo: https://github.com/2SSK/dot-files.git
     dest: /home/{{ ansible_user }}/dotfiles
     version: main
+    force: yes
 
 - name: git clone wallpapers repo
   git:
     repo: https://github.com/2SSK/Wallpaper-bank.git
     dest: /home/{{ ansible_user }}/Wallpaper-bank
     version: main
+    force: yes
