@@ -1,18 +1,18 @@
 # Package Management
 package_manager: yay
+update_cache: yes
 
-# Core System Packages
+# Core System Packages (pacman)
 core_packages:
   - git
   - curl
-  - go
   - stow
   - unzip
   - wget
   - base-devel
   - cargo
 
-# CLI Tools
+# CLI Tools (pacman)
 cli_packages:
   - eza
   - zoxide
@@ -21,51 +21,61 @@ cli_packages:
   - htop
   - btop
   - cava
-  - fastfetch
   - cmatrix
   - cbonsai
   - pipe.sh
   - sl
   - tty-clock
   - yazi
+
+# CLI Tools (AUR - yay)
+cli_aur_packages:
+  - fastfetch
   - ttyper
 
-# Development Tools
+# Development Tools (pacman)
 dev_packages:
   - clang
+  - go
   - tmux
   - vim
   - nodejs
   - npm
-  - yarn
   - neovim
   - docker
   - github-cli
+
+# Development Tools (AUR - yay)
+dev_aur_packages:
+  - yarn
   - lazygit
   - lazydocker
 
-# Shell & Terminal
+# Shell & Terminal (pacman)
 shell_packages:
   - zsh
+  - xsel
+  - wl-clipboard
+
+# Shell & Terminal (AUR - yay)
+shell_aur_packages:
   - oh-my-zsh-git
   - zsh-autosuggestions
   - zsh-syntax-highlighting
   - starship
-  - xsel
-  - wl-clipboard
 
-# Desktop Environment
+# Desktop Environment (pacman)
 gnome_packages:
   - gnome-tweaks
   - gnome-shell-extensions
   - gnome-browser-connector
 
-# GNOME Extensions
+# GNOME Extensions (AUR - yay)
 gnome_extensions:
   - gnome-shell-extension-spacebar-git
   - gnome-shell-extension-dash-to-dock
 
-# Window Managers
+# Window Managers (pacman)
 wm_packages:
   - i3lock-color
   - picom
@@ -80,25 +90,30 @@ wm_packages:
   - swaybg
   - wlogout
   - grimshot
-  - waypaper
-  - hyprlock
 
-# Applications (AUR alternatives for Arch)
+# Window Managers (AUR - yay)
+wm_aur_packages:
+  - waypaper
+
+# Applications (pacman)
+applications_pacman:
+  - discord
+  - obs-studio
+  - vlc
+  - libreoffice-still
+
+# Applications (AUR - yay)
 applications:
   - code
   - cursor-bin
   - brave-bin
   - postman-bin
   - mongodb-compass-bin
-  - spotify
-  - spicetify-cli
-  - discord
+  - spotify-cli
+  - spicetify
   - obsidian
-  - obs-studio
-  - vlc
-  - libreoffice-still
 
-# Fonts
+# Fonts (pacman)
 fonts:
   - nerd-fonts-jetbrains-mono
 

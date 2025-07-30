@@ -7,24 +7,21 @@
   pre_tasks:
     - name: Update package cache
       tags: always
-      pacman:
+      yay:
         update_cache: yes
       changed_when: false
 
     - name: Install core packages
-      pacman:
+      yay:
         name: "{{ core_packages }}"
         state: present
 
-  roles:
-    - role: jahrik.yay
-      vars:
-        yay_user: "{{ ansible_user }}"
-    # - ssh
-    # - common
-    # - shell
-    # - cli
-    # - dev
-    # - gnome
-    # - wm
-    # - applications
+  # roles:
+  #   - ssh
+  # - common
+  # - shell
+  # - cli
+  # - dev
+  # - gnome
+  # - wm
+  # - applications
