@@ -6,7 +6,8 @@ if [[ "$EUID" -ne 0 ]]; then
     exit 1
 fi
 
-USER_TO_ADD="ssk"
+# Parameterize the username (default to "ssk" if not provided)
+USER_TO_ADD="${1:-ssk}"
 
 # Check if user exists
 if ! id "$USER_TO_ADD" &>/dev/null; then
@@ -14,9 +15,9 @@ if ! id "$USER_TO_ADD" &>/dev/null; then
     exit 1
 fi
 
-# Add user to sudoers if not already
-if groups "$USER_TO_ADD" | grep -qv "\bsudo\b"; then
-    echo "Adding $USER_TO_ADD to sudoers..."
+# Add user to wheel group if not already
+if ! groups "$USER_TO_ADD" | grep -qw "wheel"; then
+    echo "Adding $USER_TO_ADD to wheel group (sudoers)..."
     usermod -aG wheel "$USER_TO_ADD"
 
     # Ensure wheel group has sudo privileges
@@ -51,4 +52,4 @@ else
 fi
 
 # Run Ansible playbook as the user
-sudo -u "$USER_TO_ADD" ansible-playbook /home/$USER_TO_ADD/playbook.yml --ask-become-pass
+ ansible-playbook playbook.yml --ask-become-pass
