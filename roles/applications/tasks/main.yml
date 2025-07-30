@@ -8,10 +8,20 @@
     creates: /usr/bin/code
   become_user: "{{ ansible_user }}"
 
-- name: Check if spicetify is available
-  stat:
-    path: /usr/bin/spicetify
-  register: spicetify_check
+- name: Ensure spicetify config directory exists
+  file:
+    path: "/home/{{ ansible_user }}/.config/spicetify"
+    state: directory
+    mode: "0755"
+  become_user: "{{ ansible_user }}"
+
+- name: Set prefs_path in spicetify config-xpui.ini
+  lineinfile:
+    path: "/home/{{ ansible_user }}/.config/spicetify/config-xpui.ini"
+    line: "prefs_path = /home/{{ ansible_user }}/.config/spotify/prefs"
+    create: yes
+  become_user: "{{ ansible_user }}"
+  when: spicetify_check.stat.exists
 
 - name: Load Spicetify
   shell: |
@@ -19,6 +29,6 @@
     spicetify apply
   args:
     executable: /bin/bash
-    creates: ~/.config/spicetify/config.ini
+    creates: "/home/{{ ansible_user }}/.config/spicetify/config.ini"
   become_user: "{{ ansible_user }}"
   when: spicetify_check.stat.exists
