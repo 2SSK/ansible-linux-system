@@ -1,7 +1,8 @@
 ---
 - name: Install applications via yay
+  become: true
   shell: |
-    yay -S --noconfirm {{ applications | join(' ') }}
+    yay -S --noconfirm --skipchecks {{ applications | join(' ') }}
   args:
     executable: /bin/bash
     creates: /usr/bin/code
