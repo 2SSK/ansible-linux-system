@@ -53,11 +53,11 @@ shell_packages:
 # Desktop Environment (pacman)
 gnome_packages:
   - gnome-tweaks
-  # - gnome-shell-extensions
-  # - gnome-browser-connector
-  # - gnome-shell-extension-spacebar-git
-  # - gnome-shell-extension-dash-to-dock
-  #
+  - gnome-shell-extensions
+  - gnome-browser-connector
+  - gnome-shell-extension-space-bar-git
+  - gnome-shell-extension-dash-to-dock-git
+
 # Window Managers (pacman)
 wm_packages:
   - i3
