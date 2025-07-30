@@ -1,3 +1,7 @@
+# User Configuration
+ansible_user: "ssk"
+ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+
 # Core System Packages (pacman)
 core_packages:
   - git
@@ -18,14 +22,9 @@ cli_packages:
   - btop
   - cava
   - cmatrix
-  - cbonsai
-  - pipe.sh
   - sl
   - tty-clock
   - yazi
-
-# CLI Tools (AUR - yay)
-cli_aur_packages:
   - fastfetch
   - ttyper
 
@@ -33,16 +32,13 @@ cli_aur_packages:
 dev_packages:
   - clang
   - go
-  - tmux
   - vim
   - nodejs
   - npm
   - neovim
+  - tmux
   - docker
   - github-cli
-
-# Development Tools (AUR - yay)
-dev_aur_packages:
   - yarn
   - lazygit
   - lazydocker
@@ -52,27 +48,19 @@ shell_packages:
   - zsh
   - xsel
   - wl-clipboard
-
-# Shell & Terminal (AUR - yay)
-shell_aur_packages:
-  - oh-my-zsh-git
-  - zsh-autosuggestions
-  - zsh-syntax-highlighting
   - starship
 
 # Desktop Environment (pacman)
 gnome_packages:
   - gnome-tweaks
-  - gnome-shell-extensions
-  - gnome-browser-connector
-
-# GNOME Extensions (AUR - yay)
-gnome_extensions:
-  - gnome-shell-extension-spacebar-git
-  - gnome-shell-extension-dash-to-dock
-
+  # - gnome-shell-extensions
+  # - gnome-browser-connector
+  # - gnome-shell-extension-spacebar-git
+  # - gnome-shell-extension-dash-to-dock
+  #
 # Window Managers (pacman)
 wm_packages:
+  - i3
   - i3lock-color
   - picom
   - polybar
@@ -86,20 +74,14 @@ wm_packages:
   - swaybg
   - wlogout
   - grimshot
-
-# Window Managers (AUR - yay)
-wm_aur_packages:
   - waypaper
 
-# Applications (pacman)
-applications_pacman:
+# Applications (AUR - yay)
+applications:
   - discord
   - obs-studio
   - vlc
   - libreoffice-still
-
-# Applications (AUR - yay)
-applications:
   - code
   - cursor-bin
   - brave-bin
@@ -111,8 +93,4 @@ applications:
 
 # Fonts (pacman)
 fonts:
-  - nerd-fonts-jetbrains-mono
-
-# User Configuration
-ansible_user: "{{ lookup('env', 'ANSIBLE_USER') | default('ssk') }}"
-ansible_ssh_private_key_file: "{{ lookup('env', 'ANSIBLE_SSH_KEY') | default('~/.ssh/id_rsa') }}"
+  - ttf-jetbrains-mono-nerd

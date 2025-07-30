@@ -1,9 +1,9 @@
 ---
 - name: Install GNOME packages via yay
-  yay:
-    name: "{{ gnome_packages + gnome_extensions }}"
-    state: present
-  become: true
+  shell: yay -S --noconfirm {{ gnome_packages | join(' ') }}
+  args:
+    executable: /bin/bash
+  become_user: "{{ ansible_user }}"
 
 - name: Configure GNOME to have 6 workspaces
   shell: |
@@ -15,16 +15,16 @@
   shell: |
     # Move to next workspace (right)
     gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Super>slash']"
-    
+
     # Move to previous workspace (left)
     gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Super>period']"
-    
+
     # Move window to next workspace (right)
     gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Super><Shift>slash']"
-    
+
     # Move window to previous workspace (left)
     gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Super><Shift>period']"
-    
+
     # Close active window
     gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
   become_user: "{{ ansible_user }}"
@@ -41,7 +41,7 @@
     gsettings set org.gnome.shell.keybindings switch-to-application-7 "[]"
     gsettings set org.gnome.shell.keybindings switch-to-application-8 "[]"
     gsettings set org.gnome.shell.keybindings switch-to-application-9 "[]"
-    
+
     # Set Super + number to switch to specific workspaces
     gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Super>1']"
     gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-2 "['<Super>2']"

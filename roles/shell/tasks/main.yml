@@ -1,18 +1,19 @@
 ---
 - name: Install shell packages via yay
-  yay:
-    name: "{{ shell_packages + shell_aur_packages }}"
-    state: present
+  shell: yay -S --noconfirm {{ shell_packages | join(' ') }}
+  args:
+    executable: /bin/bash
 
 - name: Set Zsh as default shell
   user:
     name: "{{ ansible_user }}"
     shell: /bin/zsh
 
-- name: Set variables
-  set_fact:
-    user: "{{ ansible_user }}"
-    zsh_custom: "/home/{{ ansible_user }}/.oh-my-zsh/custom"
+- name: Install nerd font packages
+  shell: yay -S --noconfirm {{ fonts | join(' ') }} && fc-cache -f -v
+  args:
+    executable: /bin/bash
+    creates: "/usr/share/fonts/TTF/JetBrainsMonoNLNerdFont-Regular.ttf"
 
 - name: Install Oh My Zsh for user
   shell: |
@@ -20,28 +21,20 @@
   args:
     executable: /bin/bash
     creates: "/home/{{ ansible_user }}/.oh-my-zsh"
-  become_user: "{{ user }}"
+  become_user: "{{ ansible_user }}"
+
+- name: Set custom zsh plugin path
+  set_fact:
+    zsh_custom: "/home/{{ ansible_user }}/.oh-my-zsh/custom"
 
 - name: Install zsh-autosuggestions
   git:
     repo: https://github.com/zsh-users/zsh-autosuggestions.git
     dest: "{{ zsh_custom }}/plugins/zsh-autosuggestions"
-  become_user: "{{ user }}"
+  become_user: "{{ ansible_user }}"
 
 - name: Install zsh-syntax-highlighting
   git:
     repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
     dest: "{{ zsh_custom }}/plugins/zsh-syntax-highlighting"
-  become_user: "{{ user }}"
-
-- name: Install Starship
-  shell: |
-    curl -fsSL https://starship.rs/install.sh | sh -s -- -y
-  args:
-    creates: /usr/local/bin/starship
-  become_user: "{{ user }}"
-
-- name: Stow dotfiles
-  shell: |
-    cd /home/{{ ansible_user }}/dotfiles && stow .
-  become_user: "{{ user }}"
+  become_user: "{{ ansible_user }}"

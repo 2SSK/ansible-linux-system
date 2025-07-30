@@ -1,5 +1,7 @@
 ---
 - name: Install CLI tools via yay
-  yay:
-    name: "{{ cli_packages + cli_aur_packages }}"
-    state: present
+  shell: yay -S --noconfirm {{ cli_packages | join(' ') }}
+  args:
+    executable: /bin/bash
+    creates: /usr/bin/eza
+  become_user: "{{ ansible_user }}"

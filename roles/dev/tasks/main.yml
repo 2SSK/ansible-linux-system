@@ -1,8 +1,10 @@
 ---
 - name: Install development packages via yay
-  yay:
-    name: "{{ dev_packages + dev_aur_packages }}"
-    state: present
+  shell: yay -S --noconfirm {{ dev_packages | join(' ') }}
+  args:
+    executable: /bin/bash
+    creates: /usr/bin/clang
+  become_user: "{{ ansible_user }}"
 
 - name: Install Vim-Plug for Vim
   shell: |

@@ -16,11 +16,11 @@
         executable: /bin/bash
 
   roles:
-    - ssh
-  # - common
-  # - shell
-  # - cli
-  # - dev
-  # - gnome
-  # - wm
-  # - applications
+    # - ssh
+    - common
+    - shell
+    - cli
+    - dev
+    - gnome
+    - wm
+    - applications
