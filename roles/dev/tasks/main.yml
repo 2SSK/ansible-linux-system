@@ -1,9 +1,8 @@
 ---
-- name: Install development packages via pacman
-  pacman:
-    name: "{{ dev_packages }}"
+- name: Install development packages via yay
+  yay:
+    name: "{{ dev_packages + dev_aur_packages }}"
     state: present
-    update_cache: yes
 
 - name: Install Vim-Plug for Vim
   shell: |

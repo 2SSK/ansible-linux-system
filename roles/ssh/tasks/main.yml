@@ -1,5 +1,5 @@
 - name: Install and start SSH server
-  pacman:
-    name: openssh
-    state: present
+  shell: yay -S openssh --noconfirm
+  args:
+    executable: /bin/bash
   notify: Start SSH

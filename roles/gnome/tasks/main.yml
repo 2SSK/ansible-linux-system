@@ -1,16 +1,8 @@
 ---
-- name: Install GNOME packages via pacman
-  pacman:
-    name: "{{ gnome_packages }}"
+- name: Install GNOME packages via yay
+  yay:
+    name: "{{ gnome_packages + gnome_extensions }}"
     state: present
-    update_cache: yes
-  become: true
-
-- name: Install GNOME extensions via yay
-  shell: |
-    yay -S --noconfirm {{ gnome_extensions | join(' ') }}
-  args:
-    creates: /usr/share/gnome-shell/extensions/spacebar@lhoracek.gmail.com
   become: true
 
 - name: Configure GNOME to have 6 workspaces

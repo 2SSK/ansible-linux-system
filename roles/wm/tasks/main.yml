@@ -1,6 +1,5 @@
 ---
-- name: Install window manager packages via pacman
-  pacman:
-    name: "{{ wm_packages }}"
+- name: Install window manager packages via yay
+  yay:
+    name: "{{ wm_packages + wm_aur_packages }}"
     state: present
-  become: true

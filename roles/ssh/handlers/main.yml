@@ -1,5 +1,5 @@
 - name: Start SSH
   systemd:
-    name: ssh
+    name: sshd
     enabled: true
     state: started

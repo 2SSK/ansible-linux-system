@@ -7,17 +7,16 @@
   pre_tasks:
     - name: Update package cache
       tags: always
-      yay:
-        update_cache: yes
+      shell: yay -Sy
       changed_when: false
 
     - name: Install core packages
-      yay:
-        name: "{{ core_packages }}"
-        state: present
+      shell: yay -S {{ core_packages | join(' ') }} --noconfirm
+      args:
+        executable: /bin/bash
 
-  # roles:
-  #   - ssh
+  roles:
+    - ssh
   # - common
   # - shell
   # - cli

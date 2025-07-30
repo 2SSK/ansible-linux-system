@@ -1,7 +1,3 @@
-# Package Management
-package_manager: yay
-update_cache: yes
-
 # Core System Packages (pacman)
 core_packages:
   - git

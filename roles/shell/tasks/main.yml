@@ -1,7 +1,7 @@
 ---
-- name: Install shell packages
-  pacman:
-    name: "{{ shell_packages }}"
+- name: Install shell packages via yay
+  yay:
+    name: "{{ shell_packages + shell_aur_packages }}"
     state: present
 
 - name: Set Zsh as default shell
