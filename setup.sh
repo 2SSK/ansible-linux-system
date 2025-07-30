@@ -6,27 +6,14 @@ if ! command -v pacman >/dev/null 2>&1; then
     exit 1
 fi
 
-# Install Ansible
-echo "Installing Ansible..."
-if command -v apt >/dev/null 2>&1; then
-    sudo apt update
-    sudo apt install -y ansible
-elif command -v dnf >/dev/null 2>&1; then
-    sudo dnf install -y ansible
-elif command -v pacman >/dev/null 2>&1; then
-    sudo pacman -Sy ansible
-else
-    echo "No supported package manager found."
-fi
-
-# Check if yay is installed
+# Check and install yay first
 echo "Checking for yay..."
 if ! command -v yay >/dev/null 2>&1; then
     echo "yay not found. Installing yay..."
-    
-    # Install base-devel and git
-    sudo pacman -S --noconfirm base-devel git
-    
+
+    # Install base-devel and git if not already installed
+    sudo pacman -S --needed --noconfirm base-devel git
+
     # Clone and install yay
     cd /tmp
     git clone https://aur.archlinux.org/yay.git
@@ -34,15 +21,24 @@ if ! command -v yay >/dev/null 2>&1; then
     makepkg -si --noconfirm
     cd -
     rm -rf /tmp/yay
-    
+
     echo "yay installed successfully!"
 else
     echo "yay is already installed."
 fi
 
-# Install required Galaxy roles
-echo "Installing required Ansible Galaxy roles..."
-ansible-galaxy install -r requirements.yml
+# Now install Ansible
+echo "Installing Ansible..."
+if ! command -v ansible >/dev/null 2>&1; then
+    yay -S --noconfirm ansible
+else
+    echo "Ansible is already installed."
+fi
 
-echo "Running Ansible playbook..."
-ansible-playbook playbook.yml --ask-become-pass
+# Run playbook if it exists
+if [[ -f playbook.yml ]]; then
+    echo "Running Ansible playbook..."
+    ansible-playbook playbook.yml --ask-become-pass
+else
+    echo "No playbook.yml found. Exiting."
+fi

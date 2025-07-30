@@ -14,24 +14,28 @@ cd ansible-dev-setup
 ## ✨ Features
 
 ### **🎯 Core System**
+
 - **EndeavourOS/Arch Optimized**: Uses `yay` for all package management
 - **Centralized Configuration**: All packages defined in `group_vars/all.yml`
 - **Automatic Yay Setup**: Installs AUR helper automatically via `setup.sh`
 - **User-Safe Installation**: Runs yay as user, not root
 
 ### **🖥️ Desktop Environment**
+
 - **GNOME 6 Workspaces**: Fixed workspace configuration
 - **Custom Keybindings**: Complete workspace navigation system
 - **GNOME Extensions**: Spacebar, Dash-to-Dock
 - **Window Management**: Move windows between workspaces
 
 ### **💻 Development Environment**
+
 - **Complete Dev Stack**: Node.js, Go, Docker, GitHub CLI
 - **Editors**: VS Code, Cursor, Neovim, Vim
 - **Terminal**: Zsh, Oh My Zsh, Starship prompt
 - **CLI Tools**: eza, zoxide, bat, fzf, htop, btop
 
 ### **🎨 Applications**
+
 - **Browsers**: Brave, Firefox
 - **Development**: VS Code, Cursor, Postman, MongoDB Compass
 - **Media**: Spotify, VLC, OBS Studio
@@ -46,6 +50,7 @@ cd ansible-dev-setup
 ## 🔧 Setup Options
 
 ### **Option 1: Quick Setup (Recommended)**
+
 ```bash
 git clone https://github.com/2SSK/ansible-dev-setup.git
 cd ansible-dev-setup
@@ -53,6 +58,7 @@ cd ansible-dev-setup
 ```
 
 ### **Option 2: Manual Setup**
+
 ```bash
 # Install Ansible
 sudo pacman -S ansible
@@ -62,6 +68,7 @@ ansible-playbook playbook.yml --ask-become-pass
 ```
 
 ### **Option 3: Custom User**
+
 ```bash
 # Set custom user and SSH key
 ANSIBLE_USER=yourusername ANSIBLE_SSH_KEY=~/.ssh/custom_key ansible-playbook playbook.yml
@@ -69,49 +76,59 @@ ANSIBLE_USER=yourusername ANSIBLE_SSH_KEY=~/.ssh/custom_key ansible-playbook pla
 
 ## 🎮 GNOME Keybindings
 
-| Key | Action |
-|-----|--------|
-| `Super + 1-6` | Switch to specific workspace |
-| `Super + /` | Switch to next workspace (right) |
-| `Super + .` | Switch to previous workspace (left) |
-| `Super + Shift + 1-6` | Move window to specific workspace |
-| `Super + Shift + /` | Move window to next workspace |
-| `Super + Shift + .` | Move window to previous workspace |
-| `Super + Q` | Close active window |
+| Key                   | Action                              |
+| --------------------- | ----------------------------------- |
+| `Super + 1-6`         | Switch to specific workspace        |
+| `Super + /`           | Switch to next workspace (right)    |
+| `Super + .`           | Switch to previous workspace (left) |
+| `Super + Shift + 1-6` | Move window to specific workspace   |
+| `Super + Shift + /`   | Move window to next workspace       |
+| `Super + Shift + .`   | Move window to previous workspace   |
+| `Super + Q`           | Close active window                 |
 
 ## 📦 Package Categories
 
 ### **Core System (7 packages)**
+
 - git, curl, stow, unzip, wget, base-devel, cargo
 
 ### **CLI Tools (13 packages)**
+
 - eza, zoxide, bat, fzf, htop, btop, cava, cmatrix, sl, tty-clock, yazi, fastfetch, ttyper
 
 ### **Development (9 packages)**
+
 - clang, go, vim, nodejs, npm, neovim, docker, github-cli, tmux
 
 ### **Shell (4 packages)**
+
 - zsh, xsel, wl-clipboard, starship
 
 ### **Applications (10 packages)**
+
 - discord, obs-studio, vlc, libreoffice-still, code, cursor-bin, brave-bin, postman-bin, mongodb-compass-bin, obsidian
 
 ### **Window Managers (9 packages)**
+
 - i3, picom, polybar, rofi, feh, scrot, swaybg, swaylock, waybar
 
 ### **GNOME Extensions (2 packages)**
+
 - gnome-shell-extension-space-bar-git, gnome-shell-extension-dash-to-dock-git
 
 ## 🔧 Customization
 
 ### **Add/Remove Packages**
+
 Edit `group_vars/all.yml`:
+
 ```yaml
 cli_packages:
   - your-new-package
 ```
 
 ### **Run Specific Roles**
+
 ```bash
 # Install only CLI tools
 ansible-playbook playbook.yml --tags cli
@@ -121,6 +138,7 @@ ansible-playbook playbook.yml --tags dev
 ```
 
 ### **Update Packages**
+
 ```bash
 # Update system packages
 sudo pacman -Syu
@@ -148,6 +166,7 @@ yay -Sua
 - ✅ **Conditional Tasks**: Added checks for optional packages like spicetify
 
 ### **Logs & Debugging**
+
 ```bash
 # Verbose output
 ansible-playbook playbook.yml -vvv
@@ -186,6 +205,7 @@ ansible-dev-setup/
 ## 🔄 Recent Changes
 
 ### **v2.0 - Arch Migration**
+
 - Migrated from Ubuntu to EndeavourOS/Arch
 - Switched to `yay` for all package management
 - Fixed root user build issues
@@ -193,6 +213,7 @@ ansible-dev-setup/
 - Added GNOME workspace customization
 
 ### **Key Improvements**
+
 - **User-Safe Installation**: All yay commands run as user
 - **Centralized Configuration**: All packages in `group_vars/all.yml`
 - **Conditional Tasks**: Optional packages handled gracefully

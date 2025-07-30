@@ -1,5 +1,5 @@
 ---
-- hosts: local
+- hosts: server
   become: true
   vars_files:
     - group_vars/all.yml
@@ -23,4 +23,4 @@
     - dev
     - gnome
     - wm
-    - applications
+    # - applications
