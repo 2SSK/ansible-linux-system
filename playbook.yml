@@ -16,7 +16,7 @@
         executable: /bin/bash
 
   roles:
-    - ssh
+    # - ssh
     - common
     - shell
     - cli

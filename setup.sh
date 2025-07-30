@@ -1,40 +1,54 @@
 #!/bin/bash
 
-# Check if running on Arch-based system
-if ! command -v pacman >/dev/null 2>&1; then
-    echo "This script is designed for Arch-based systems (EndeavourOS, Manjaro, Arch Linux, etc.)"
+# Ensure the script is run as root
+if [[ "$EUID" -ne 0 ]]; then
+    echo "Please run this script as root (e.g., using sudo)"
     exit 1
 fi
 
-# Check and install yay first
-echo "Checking for yay..."
+USER_TO_ADD="ssk"
+
+# Check if user exists
+if ! id "$USER_TO_ADD" &>/dev/null; then
+    echo "User '$USER_TO_ADD' does not exist."
+    exit 1
+fi
+
+# Add user to sudoers if not already
+if groups "$USER_TO_ADD" | grep -qv "\bsudo\b"; then
+    echo "Adding $USER_TO_ADD to sudoers..."
+    usermod -aG wheel "$USER_TO_ADD"
+
+    # Ensure wheel group has sudo privileges
+    sed -i '/^# %wheel ALL=(ALL:ALL) ALL/s/^# //' /etc/sudoers
+fi
+
+# Check if pacman is present
+if ! command -v pacman >/dev/null 2>&1; then
+    echo "This script is for Arch-based systems only."
+    exit 1
+fi
+
+# Install yay if not installed
 if ! command -v yay >/dev/null 2>&1; then
-    echo "yay not found. Installing yay..."
-
-    # Install base-devel and git if not already installed
-    sudo pacman -S --needed --noconfirm base-devel git
-
-    # Clone and install yay
-    cd /tmp
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si --noconfirm
-    cd -
+    echo "Installing yay..."
+    sudo -u "$USER_TO_ADD" bash -c '
+        cd /tmp &&
+        git clone https://aur.archlinux.org/yay.git &&
+        cd yay &&
+        makepkg -si --noconfirm
+    '
     rm -rf /tmp/yay
-
-    echo "yay installed successfully!"
 else
     echo "yay is already installed."
 fi
 
-# Now install Ansible
-echo "Installing Ansible..."
+# Install ansible using yay
 if ! command -v ansible >/dev/null 2>&1; then
-    yay -S --noconfirm ansible
+    sudo -u "$USER_TO_ADD" yay -S --noconfirm ansible
 else
     echo "Ansible is already installed."
 fi
 
-# Run playbook if it exists
-echo "Running Ansible playbook..."
-ansible-playbook playbook.yml --ask-become-pass
+# Run Ansible playbook as the user
+sudo -u "$USER_TO_ADD" ansible-playbook /home/$USER_TO_ADD/playbook.yml --ask-become-pass
