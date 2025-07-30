@@ -1,5 +1,5 @@
 ---
-- hosts: server
+- hosts: local
   become: true
   vars_files:
     - group_vars/all.yml

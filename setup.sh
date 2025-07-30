@@ -36,9 +36,5 @@ else
 fi
 
 # Run playbook if it exists
-if [[ -f playbook.yml ]]; then
-    echo "Running Ansible playbook..."
-    ansible-playbook playbook.yml --ask-become-pass
-else
-    echo "No playbook.yml found. Exiting."
-fi
+echo "Running Ansible playbook..."
+ansible-playbook playbook.yml --ask-become-pass
