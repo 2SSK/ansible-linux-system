@@ -16,33 +16,15 @@
         name: "{{ core_packages }}"
         state: present
 
-    - name: Download and build yay
-      block:
-        - name: Download yay AUR snapshot
-          become: false
-          shell: |
-            mkdir -p /tmp/yay && \
-            curl -L https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz | tar -xz -C /tmp && \
-            cd /tmp/yay && makepkg -f --noconfirm
-
-        - name: Find yay package file
-          find:
-            paths: /tmp/yay
-            patterns: "yay-*.pkg.tar.zst"
-          register: yay_packages
-
-        - name: Install yay package
-          pacman:
-            name: "{{ yay_packages.files[0].path }}"
-            state: present
-          when: yay_packages.files | length > 0
-
   roles:
-    - ssh
-    - common
-    - shell
-    - cli
-    - dev
-    - gnome
-    - wm
-    - applications
+    - role: jahrik.yay
+      vars:
+        yay_user: "{{ ansible_user }}"
+    # - ssh
+    # - common
+    # - shell
+    # - cli
+    # - dev
+    # - gnome
+    # - wm
+    # - applications

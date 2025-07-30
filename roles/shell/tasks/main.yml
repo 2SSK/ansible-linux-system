@@ -3,7 +3,6 @@
   pacman:
     name: "{{ shell_packages }}"
     state: present
-    update_cache: yes
 
 - name: Set Zsh as default shell
   user:

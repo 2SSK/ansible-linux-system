@@ -11,4 +11,9 @@ else
     echo "No supported package manager found."
 fi
 
+# Install required Galaxy roles
+echo "Installing required Ansible Galaxy roles..."
+ansible-galaxy install -r requirements.yml
+
+echo "Running Ansible playbook..."
 ansible-playbook playbook.yml --ask-become-pass
