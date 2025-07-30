@@ -1,9 +1,6 @@
 ---
 - hosts: local
   become: true
-  environment:
-    LANG: en_US.UTF-8
-    LC_ALL: en_US.UTF-8
   vars_files:
     - group_vars/all.yml
 
