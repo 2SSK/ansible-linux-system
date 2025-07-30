@@ -1,5 +1,6 @@
 ---
 - name: Install window manager packages via yay
+  become: true
   shell: yay -S --noconfirm {{ wm_packages | join(' ') }}
   args:
     executable: /bin/bash
