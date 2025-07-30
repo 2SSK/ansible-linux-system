@@ -14,9 +14,10 @@ cd ansible-dev-setup
 ## ✨ Features
 
 ### **🎯 Core System**
-- **EndeavourOS/Arch Optimized**: Uses `pacman` and `yay` for package management
+- **EndeavourOS/Arch Optimized**: Uses `yay` for all package management
 - **Centralized Configuration**: All packages defined in `group_vars/all.yml`
-- **Automatic Yay Setup**: Installs AUR helper automatically
+- **Automatic Yay Setup**: Installs AUR helper automatically via `setup.sh`
+- **User-Safe Installation**: Runs yay as user, not root
 
 ### **🖥️ Desktop Environment**
 - **GNOME 6 Workspaces**: Fixed workspace configuration
@@ -33,7 +34,7 @@ cd ansible-dev-setup
 ### **🎨 Applications**
 - **Browsers**: Brave, Firefox
 - **Development**: VS Code, Cursor, Postman, MongoDB Compass
-- **Media**: Spotify (with Spicetify), VLC, OBS Studio
+- **Media**: Spotify, VLC, OBS Studio
 - **Productivity**: Obsidian, LibreOffice, Discord
 
 ## 📋 Prerequisites
@@ -83,20 +84,23 @@ ANSIBLE_USER=yourusername ANSIBLE_SSH_KEY=~/.ssh/custom_key ansible-playbook pla
 ### **Core System (7 packages)**
 - git, curl, stow, unzip, wget, base-devel, cargo
 
-### **CLI Tools (15 packages)**
-- eza, zoxide, bat, fzf, htop, btop, cava, fastfetch, cmatrix, cbonsai, pipe.sh, sl, tty-clock, yazi, ttyper
+### **CLI Tools (13 packages)**
+- eza, zoxide, bat, fzf, htop, btop, cava, cmatrix, sl, tty-clock, yazi, fastfetch, ttyper
 
-### **Development (12 packages)**
-- clang, go, tmux, vim, nodejs, npm, yarn, neovim, docker, github-cli, lazygit, lazydocker
+### **Development (9 packages)**
+- clang, go, vim, nodejs, npm, neovim, docker, github-cli, tmux
 
-### **Shell (7 packages)**
-- zsh, oh-my-zsh-git, zsh-autosuggestions, zsh-syntax-highlighting, starship, xsel, wl-clipboard
+### **Shell (4 packages)**
+- zsh, xsel, wl-clipboard, starship
 
-### **Applications (12 packages)**
-- code, cursor-bin, brave-bin, postman-bin, mongodb-compass-bin, spotify-cli, spicetify, discord, obsidian, obs-studio, vlc, libreoffice-still
+### **Applications (10 packages)**
+- discord, obs-studio, vlc, libreoffice-still, code, cursor-bin, brave-bin, postman-bin, mongodb-compass-bin, obsidian
 
-### **Window Managers (14 packages)**
-- i3lock-color, picom, polybar, rofi, autotile, feh, scrot, sway, waybar, swaylock, swaybg, wlogout, grimshot, waypaper
+### **Window Managers (9 packages)**
+- i3, picom, polybar, rofi, feh, scrot, swaybg, swaylock, waybar
+
+### **GNOME Extensions (2 packages)**
+- gnome-shell-extension-space-bar-git, gnome-shell-extension-dash-to-dock-git
 
 ## 🔧 Customization
 
@@ -133,6 +137,15 @@ yay -Sua
 2. **Permission denied**: Ensure you have sudo privileges
 3. **Package conflicts**: Check for conflicting packages in AUR
 4. **GNOME extensions not working**: Restart GNOME Shell (`Alt+F2`, type `r`)
+5. **Root user build errors**: All yay commands now run as user, not root
+6. **Missing packages**: Some packages may not exist in AUR - check package names
+
+### **Recent Fixes**
+
+- ✅ **Root User Issue**: Fixed yay running as root (now runs as user)
+- ✅ **Missing Packages**: Removed non-existent packages from lists
+- ✅ **Build Failures**: Separated problematic AUR packages
+- ✅ **Conditional Tasks**: Added checks for optional packages like spicetify
 
 ### **Logs & Debugging**
 ```bash
@@ -144,6 +157,9 @@ pacman -Q | grep package-name
 
 # Check AUR packages
 yay -Q | grep package-name
+
+# Check if yay is installed
+which yay
 ```
 
 ## 📁 Project Structure
@@ -167,6 +183,21 @@ ansible-dev-setup/
     └── applications/    # GUI applications
 ```
 
+## 🔄 Recent Changes
+
+### **v2.0 - Arch Migration**
+- Migrated from Ubuntu to EndeavourOS/Arch
+- Switched to `yay` for all package management
+- Fixed root user build issues
+- Centralized package configuration
+- Added GNOME workspace customization
+
+### **Key Improvements**
+- **User-Safe Installation**: All yay commands run as user
+- **Centralized Configuration**: All packages in `group_vars/all.yml`
+- **Conditional Tasks**: Optional packages handled gracefully
+- **Better Error Handling**: Improved troubleshooting
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -181,4 +212,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Built for Arch** 🐧 | **Powered by Ansible** ⚡
+**Built for Arch** 🐧 | **Powered by Ansible** ⚡ | **Yay-First** 🚀

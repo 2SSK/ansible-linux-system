@@ -68,7 +68,7 @@ wm_packages:
   - autotile
   - feh
   - scrot
-  - sway
+  - swayfx
   - waybar
   - swaylock
   - swaybg
@@ -76,7 +76,7 @@ wm_packages:
   - grimshot
   - waypaper
 
-# Applications (AUR - yay)
+# Applications (yay)
 applications:
   - discord
   - obs-studio
@@ -87,9 +87,9 @@ applications:
   - brave-bin
   - postman-bin
   - mongodb-compass-bin
-  - spotify-cli
-  - spicetify
   - obsidian
+  - spotify
+  - spicetify-cli
 
 # Fonts (pacman)
 fonts:

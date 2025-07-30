@@ -3,13 +3,21 @@
   shell: |
     yay -S --noconfirm {{ applications | join(' ') }}
   args:
+    executable: /bin/bash
     creates: /usr/bin/code
-  become: true
+  become_user: "{{ ansible_user }}"
+
+- name: Check if spicetify is available
+  stat:
+    path: /usr/bin/spicetify
+  register: spicetify_check
 
 - name: Load Spicetify
   shell: |
     spicetify backup
     spicetify apply
   args:
+    executable: /bin/bash
     creates: ~/.config/spicetify/config.ini
   become_user: "{{ ansible_user }}"
+  when: spicetify_check.stat.exists

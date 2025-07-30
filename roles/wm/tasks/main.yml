@@ -1,5 +1,7 @@
 ---
 - name: Install window manager packages via yay
-  yay:
-    name: "{{ wm_packages + wm_aur_packages }}"
-    state: present
+  shell: yay -S --noconfirm {{ wm_packages | join(' ') }}
+  args:
+    executable: /bin/bash
+    creates: /usr/bin/i3
+  become_user: "{{ ansible_user }}"
