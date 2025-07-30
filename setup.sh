@@ -31,4 +31,4 @@ if ! command -v yay >/dev/null 2>&1; then
 fi
 
 # Run the playbook
-ansible-playbook playbook.yml
+ansible-playbook playbook.yml --ask-become-pass
