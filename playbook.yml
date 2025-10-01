@@ -1,29 +1,18 @@
 ---
 - hosts: local
-  become: true
-  environment:
-    LANG: en_US.UTF-8
-    LC_ALL: en_US.UTF-8
-  vars_files:
-    - group_vars/all.yml
-
   pre_tasks:
-    - name: Update package cache
+    - name: Gather system facts
+      setup:
       tags: always
-      shell: yay -Sy
-      changed_when: false
-
-    - name: Install core packages
-      shell: yay -S {{ core_packages | join(' ') }} --noconfirm
-      args:
-        executable: /bin/bash
 
   roles:
-    - ssh
+    - distro-setup  # Detect distribution and setup package managers
+    - role: package-manager
+      vars:
+        package_list: "{{ core_packages }}"
+      tags: core
     - common
     - shell
     - cli
     - dev
-    - gnome
-    - wm
     - applications

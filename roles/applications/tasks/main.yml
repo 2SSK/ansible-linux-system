@@ -1,9 +1,26 @@
 ---
-- name: Install applications via yay
-  become: true
+- name: Install applications via Arch package manager (Arch)
   shell: |
     yay -S --noconfirm --skipchecks {{ applications | join(' ') }}
   args:
     executable: /bin/bash
-    creates: /usr/bin/code
   become_user: "{{ ansible_user }}"
+  when: current_distro == 'arch'
+
+- name: Install applications via DNF (Fedora)
+  include_role:
+    name: package-manager
+  vars:
+    package_list: "{{ applications_dnf | default([]) }}"
+    snap_package_list: "{{ applications_snap | default([]) }}"
+    flatpak_package_list: "{{ applications_flatpak | default([]) }}"
+  when: current_distro == 'fedora'
+
+- name: Install applications via APT (Ubuntu/Debian)
+  include_role:
+    name: package-manager
+  vars:
+    package_list: "{{ applications_apt | default([]) }}"
+    snap_package_list: "{{ applications_snap | default([]) }}"
+    flatpak_package_list: "{{ applications_flatpak | default([]) }}"
+  when: current_distro in ['ubuntu', 'debian']

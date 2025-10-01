@@ -1,10 +1,30 @@
 ---
-- name: Install development packages via yay
-  shell: yay -S --noconfirm {{ dev_packages | join(' ') }}
-  args:
-    executable: /bin/bash
-    creates: /usr/bin/clang
-  become_user: "{{ ansible_user }}"
+# Install development packages using the common package manager role
+- name: Install development packages
+  include_role:
+    name: package-manager
+  vars:
+    package_list: "{{ dev_packages }}"
+    snap_package_list: "{{ dev_packages_snap | default([]) }}"
+    flatpak_package_list: "{{ dev_packages_flatpak | default([]) }}"
+    cargo_package_list: "{{ dev_packages_cargo | default([]) }}"
+
+# Install packages that require manual installation
+- name: Install GitHub CLI manually (Debian)
+  block:
+    - name: Download GitHub CLI
+      get_url:
+        url: "https://github.com/cli/cli/releases/latest/download/gh_{{ ansible_architecture }}_linux_amd64.deb"
+        dest: "/tmp/gh.deb"
+      when: ansible_architecture == "x86_64"
+
+    - name: Install GitHub CLI
+      apt:
+        deb: "/tmp/gh.deb"
+        state: present
+  when: 
+    - current_distro == 'debian'
+    - "'gh' in (dev_packages_manual | default([]))"
 
 - name: Install Vim-Plug for Vim
   shell: |

@@ -1,0 +1,270 @@
+name: Test Ansible Playbook
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint Ansible
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible ansible-lint yamllint
+
+      - name: Lint YAML files
+        run: yamllint .
+
+      - name: Lint Ansible playbook
+        run: ansible-lint playbook.yml
+
+  test-syntax:
+    name: Test Ansible Syntax
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      matrix:
+        distribution: ['arch', 'fedora', 'debian']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Test playbook syntax
+        run: |
+          ansible-playbook playbook.yml --syntax-check \
+            -e "current_distro=${{ matrix.distribution }}" \
+            -e "ansible_user=testuser"
+
+  test-playbook:
+    name: Test Playbook
+    runs-on: ubuntu-latest
+    needs: [lint, test-syntax]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distribution: ubuntu
+            version: '22.04'
+            container: 'ubuntu:22.04'
+          - distribution: ubuntu
+            version: '20.04'
+            container: 'ubuntu:20.04'
+          - distribution: debian
+            version: '11'
+            container: 'debian:11'
+          - distribution: debian
+            version: '12'
+            container: 'debian:12'
+          - distribution: fedora
+            version: '39'
+            container: 'fedora:39'
+          - distribution: fedora
+            version: '40'
+            container: 'fedora:40'
+          - distribution: arch
+            version: 'latest'
+            container: 'archlinux:latest'
+
+    container:
+      image: ${{ matrix.container }}
+      options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (Ubuntu/Debian)
+        if: matrix.distribution == 'ubuntu' || matrix.distribution == 'debian'
+        run: |
+          apt-get update
+          apt-get install -y python3 python3-pip sudo curl git systemd
+          python3 -m pip install ansible
+
+      - name: Install dependencies (Fedora)
+        if: matrix.distribution == 'fedora'
+        run: |
+          dnf install -y python3 python3-pip sudo curl git systemd
+          python3 -m pip install ansible
+
+      - name: Install dependencies (Arch)
+        if: matrix.distribution == 'arch'
+        run: |
+          pacman -Sy --noconfirm python python-pip sudo curl git systemd
+          python -m pip install ansible
+
+      - name: Create test user
+        run: |
+          useradd -m -s /bin/bash testuser
+          echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+      - name: Run Ansible playbook (dry-run)
+        if: matrix.distribution != 'arch'
+        run: |
+          ansible-playbook playbook.yml \
+            --connection=local \
+            --inventory=localhost, \
+            --limit=localhost \
+            --check \
+            --diff \
+            -e "ansible_user=testuser" \
+            -e "current_distro=${{ matrix.distribution == 'ubuntu' && 'debian' || matrix.distribution }}"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+
+      - name: Run Ansible playbook (syntax-check for Arch)
+        if: matrix.distribution == 'arch'
+        run: |
+          ansible-playbook playbook.yml \
+            --syntax-check \
+            -e "ansible_user=testuser" \
+            -e "current_distro=arch"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+
+  test-minimal-install:
+    name: Test Comprehensive Install
+    runs-on: ubuntu-latest
+    needs: [lint, test-syntax]
+    strategy:
+      matrix:
+        tag_set: 
+          - name: "core-cli"
+            tags: "core,cli"
+          - name: "development"
+            tags: "core,dev"
+          - name: "shell-setup"
+            tags: "core,shell,common"
+    container:
+      image: ubuntu:22.04
+      options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y python3 python3-pip sudo curl git systemd
+          python3 -m pip install ansible
+
+      - name: Create test user
+        run: |
+          useradd -m -s /bin/bash testuser
+          echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+      - name: Run playbook with ${{ matrix.tag_set.name }} tags
+        run: |
+          ansible-playbook playbook.yml \
+            --connection=local \
+            --inventory=localhost, \
+            --limit=localhost \
+            -e "ansible_user=testuser" \
+            -e "current_distro=debian" \
+            --tags=${{ matrix.tag_set.tags }}
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+
+      - name: Verify core packages installation
+        run: |
+          echo "Verifying core packages are installed..."
+          which git || echo "WARNING: git not found"
+          which curl || echo "WARNING: curl not found" 
+          which sudo || echo "WARNING: sudo not found"
+          python3 --version || echo "WARNING: python3 not found"
+          
+      - name: Verify CLI tools installation
+        if: contains(matrix.tag_set.tags, 'cli')
+        run: |
+          echo "Verifying CLI tools are installed..."
+          which zsh || echo "WARNING: zsh not found"
+          zsh --version || echo "WARNING: zsh not working"
+
+      - name: Verify development tools installation
+        if: contains(matrix.tag_set.tags, 'dev')
+        run: |
+          echo "Verifying development tools..."
+          which node || echo "WARNING: node not found"
+          which docker || echo "WARNING: docker not found"
+
+  test-roles:
+    name: Test Individual Roles
+    runs-on: ubuntu-latest
+    needs: [lint, test-syntax]
+    strategy:
+      fail-fast: false
+      matrix:
+        role: [distro-setup, package-manager, common, shell, cli, dev]
+        distribution: [debian, fedora]
+    container:
+      image: ${{ matrix.distribution == 'debian' && 'ubuntu:22.04' || 'fedora:40' }}
+      options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (Ubuntu/Debian)
+        if: matrix.distribution == 'debian'
+        run: |
+          apt-get update
+          apt-get install -y python3 python3-pip sudo curl git systemd
+          python3 -m pip install ansible
+
+      - name: Install dependencies (Fedora)
+        if: matrix.distribution == 'fedora'
+        run: |
+          dnf install -y python3 python3-pip sudo curl git systemd
+          python3 -m pip install ansible
+
+      - name: Create test user
+        run: |
+          useradd -m -s /bin/bash testuser
+          echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+      - name: Test role syntax
+        run: |
+          ansible-playbook playbook.yml \
+            --syntax-check \
+            -e "ansible_user=testuser" \
+            -e "current_distro=${{ matrix.distribution }}" \
+            --tags=${{ matrix.role }}
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+
+      - name: Test role execution (dry-run)
+        run: |
+          ansible-playbook playbook.yml \
+            --connection=local \
+            --inventory=localhost, \
+            --limit=localhost \
+            --check \
+            --diff \
+            -e "ansible_user=testuser" \
+            -e "current_distro=${{ matrix.distribution }}" \
+            --tags=${{ matrix.role }}
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false

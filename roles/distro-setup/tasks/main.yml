@@ -1,0 +1,140 @@
+---
+- name: Detect distribution
+  set_fact:
+    detected_distro: "{{ 'arch' if ansible_distribution == 'Archlinux' else 
+                         'fedora' if ansible_distribution == 'Fedora' else
+                         'debian' if ansible_distribution in ['Ubuntu', 'Debian', 'Pop', 'Linux Mint', 'elementary OS'] else
+                         'unsupported' }}"
+
+- name: Display detected distribution
+  debug:
+    msg: "Detected distribution: {{ detected_distro }} ({{ ansible_distribution }})"
+
+- name: Fail if distribution is not supported
+  fail:
+    msg: "Unsupported distribution: {{ ansible_distribution }}. Supported: Arch Linux, Fedora, Ubuntu, Debian"
+  when: detected_distro == 'unsupported'
+
+- name: Load distribution-specific variables
+  include_vars: "{{ detected_distro }}.yml"
+
+- name: Set distribution facts
+  set_fact:
+    current_distro: "{{ detected_distro }}"
+    pkg_mgr: "{{ package_manager }}"
+
+- name: Set standardized package names
+  set_fact:
+    ssh_package: "{{ 'openssh' if current_distro == 'arch' else 'openssh-server' }}"
+    docker_package: "{{ 'docker' if current_distro == 'arch' else 'docker.io' }}"
+
+# Arch Linux specific setup
+- name: Install yay AUR helper (Arch)
+  block:
+    - name: Check if yay is installed
+      command: which yay
+      register: yay_check
+      failed_when: false
+      changed_when: false
+
+    - name: Clone yay repository
+      git:
+        repo: https://aur.archlinux.org/yay-bin.git
+        dest: /tmp/yay-bin
+        force: yes
+      become_user: "{{ ansible_user }}"
+      when: yay_check.rc != 0
+
+    - name: Build and install yay
+      shell: |
+        cd /tmp/yay-bin
+        makepkg -si --noconfirm
+      become_user: "{{ ansible_user }}"
+      when: yay_check.rc != 0
+
+    - name: Clean up yay build directory
+      file:
+        path: /tmp/yay-bin
+        state: absent
+      when: yay_check.rc != 0
+  when: detected_distro == 'arch'
+
+# Fedora specific setup
+- name: Setup Fedora repositories
+  block:
+    - name: Enable RPM Fusion repositories
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ fedora_repos }}"
+
+    - name: Install snapd
+      dnf:
+        name: snapd
+        state: present
+
+    - name: Enable snapd socket
+      systemd:
+        name: snapd.socket
+        enabled: true
+        state: started
+
+    - name: Install flatpak
+      dnf:
+        name: flatpak
+        state: present
+  when: detected_distro == 'fedora'
+
+# Ubuntu specific setup
+- name: Setup Ubuntu repositories
+  block:
+    - name: Add additional PPAs (Ubuntu only)
+      apt_repository:
+        repo: "{{ item }}"
+        state: present
+      loop: "{{ ubuntu_ppas }}"
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install snapd
+      apt:
+        name: snapd
+        state: present
+
+    - name: Install flatpak
+      apt:
+        name: flatpak
+        state: present
+
+    - name: Add Flathub repository
+      flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  when: detected_distro == 'debian'
+
+# Debian specific setup (now handles both Debian and Ubuntu)
+- name: Setup Debian repositories
+  block:
+    - name: Enable source repositories (Debian only)
+      lineinfile:
+        path: /etc/apt/sources.list
+        regexp: '^# deb-src'
+        line: 'deb-src http://deb.debian.org/debian {{ ansible_distribution_release }} main'
+      when: ansible_distribution == 'Debian'
+
+    - name: Install snapd
+      apt:
+        name: snapd
+        state: present
+
+    - name: Install flatpak
+      apt:
+        name: flatpak
+        state: present
+
+    - name: Add Flathub repository
+      flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  when: detected_distro == 'debian'

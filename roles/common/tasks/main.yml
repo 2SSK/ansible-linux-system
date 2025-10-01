@@ -1,3 +1,17 @@
+---
+- name: Install SSH server
+  include_role:
+    name: package-manager
+  vars:
+    package_list: 
+      - "{{ ssh_package }}"
+
+- name: Start and enable SSH service
+  systemd:
+    name: sshd
+    enabled: true
+    state: started
+
 - name: git clone dotfiles
   git:
     repo: https://github.com/2SSK/dot-files.git

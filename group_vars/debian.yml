@@ -1,0 +1,100 @@
+# Debian/Ubuntu shared package mappings
+# Works for Debian, Ubuntu, and derivatives (Mint, Pop!_OS, Elementary, etc.)
+distribution: debian
+package_manager:
+  update_cache: "apt update"
+  install: "apt install -y"
+  install_snap: "snap install"
+  install_flatpak: "flatpak install -y"
+
+# Additional repositories
+debian_repos:
+  - deb-src  # Enable source repositories
+
+# Ubuntu-specific PPAs (applied only on Ubuntu)
+ubuntu_ppas:
+  - ppa:git-core/ppa
+  - ppa:neovim-ppa/unstable
+
+# Core System Packages
+core_packages:
+  - git
+  - curl
+  - stow
+  - unzip
+  - wget
+  - build-essential
+  - software-properties-common
+  - apt-transport-https
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - cargo
+  - rustc
+
+# CLI Tools
+cli_packages:
+  - bat
+  - fzf
+  - htop
+
+# CLI tools requiring alternative installation (cargo/manual)
+cli_packages_cargo:
+  - eza
+  - zoxide
+  - btop
+  - yazi-fm
+  - starship
+
+cli_packages_manual:
+  - fastfetch  # Install from GitHub releases
+
+# Development Tools
+dev_packages:
+  - clang
+  - golang-go
+  - vim
+  - nodejs
+  - npm
+  - neovim
+  - tmux
+  - docker.io
+  - yarn
+
+# Development tools requiring alternative installation
+dev_packages_cargo:
+  - lazygit
+
+dev_packages_manual:
+  - gh  # GitHub CLI from GitHub releases
+
+# Shell & Terminal
+shell_packages:
+  - zsh
+  - xsel
+  - wl-clipboard
+
+
+
+# Applications (APT)
+applications_apt:
+  - vlc
+  - libreoffice
+
+# Applications (Snap)
+applications_snap:
+  - discord
+  - obs-studio
+  - code
+  - postman
+  - beekeeper-studio
+
+# Applications (Flatpak)
+applications_flatpak:
+  - com.spotify.Client
+  - md.obsidian.Obsidian
+  - com.brave.Browser
+
+# Fonts
+fonts:
+  - fonts-jetbrains-mono

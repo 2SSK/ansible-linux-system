@@ -1,0 +1,65 @@
+---
+# Common package installation tasks that work across distributions
+- name: Update package cache
+  shell: "{{ pkg_mgr.update_cache }}"
+  changed_when: false
+  tags: always
+
+# Install packages based on distribution
+- name: Install packages via Arch package manager (yay)
+  shell: "{{ pkg_mgr.install }} {{ package_list | join(' ') }}"
+  args:
+    executable: /bin/bash
+  become_user: "{{ ansible_user }}"
+  when: 
+    - current_distro == 'arch'
+    - package_list is defined
+    - package_list | length > 0
+
+- name: Install packages via Fedora package manager (dnf)
+  dnf:
+    name: "{{ package_list }}"
+    state: present
+  when: 
+    - current_distro == 'fedora'
+    - package_list is defined
+    - package_list | length > 0
+
+- name: Install packages via Ubuntu/Debian package manager (apt)
+  apt:
+    name: "{{ package_list }}"
+    state: present
+    update_cache: yes
+  when: 
+    - current_distro in ['ubuntu', 'debian']
+    - package_list is defined
+    - package_list | length > 0
+
+# Install Snap packages
+- name: Install Snap packages
+  snap:
+    name: "{{ snap_package_list }}"
+    state: present
+  when: 
+    - current_distro in ['fedora', 'ubuntu', 'debian']
+    - snap_package_list is defined
+    - snap_package_list | length > 0
+
+# Install Flatpak packages
+- name: Install Flatpak packages
+  flatpak:
+    name: "{{ flatpak_package_list }}"
+    state: present
+  when: 
+    - current_distro in ['fedora', 'ubuntu', 'debian']
+    - flatpak_package_list is defined
+    - flatpak_package_list | length > 0
+
+# Install Cargo packages (cross-platform)
+- name: Install Cargo packages
+  shell: "cargo install {{ item }}"
+  loop: "{{ cargo_package_list | default([]) }}"
+  become_user: "{{ ansible_user }}"
+  when: 
+    - cargo_package_list is defined
+    - cargo_package_list | length > 0

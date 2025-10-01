@@ -1,19 +1,30 @@
 ---
-- name: Install shell packages via yay
-  shell: yay -S --noconfirm {{ shell_packages | join(' ') }}
-  args:
-    executable: /bin/bash
+# Install shell packages using the common package manager role
+- name: Install shell packages
+  include_role:
+    name: package-manager
+  vars:
+    package_list: "{{ shell_packages }}"
+    snap_package_list: "{{ shell_packages_snap | default([]) }}"
+    flatpak_package_list: "{{ shell_packages_flatpak | default([]) }}"
+    cargo_package_list: "{{ shell_packages_cargo | default([]) }}"
 
 - name: Set Zsh as default shell
   user:
     name: "{{ ansible_user }}"
     shell: /bin/zsh
 
-- name: Install nerd font packages
-  shell: yay -S --noconfirm {{ fonts | join(' ') }} && fc-cache -f -v
+# Install fonts using the common package manager role
+- name: Install fonts
+  include_role:
+    name: package-manager
+  vars:
+    package_list: "{{ fonts }}"
+
+- name: Refresh font cache
+  shell: fc-cache -f -v
   args:
     executable: /bin/bash
-    creates: "/usr/share/fonts/TTF/JetBrainsMonoNLNerdFont-Regular.ttf"
 
 - name: Install Oh My Zsh for user
   shell: |

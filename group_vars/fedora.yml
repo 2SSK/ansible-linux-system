@@ -1,0 +1,93 @@
+# Fedora specific package mappings
+distribution: fedora
+package_manager:
+  update_cache: "dnf check-update || true"
+  install: "dnf install -y"
+  install_snap: "snap install"
+  install_flatpak: "flatpak install -y"
+
+# Enable additional repositories
+fedora_repos:
+  - rpmfusion-free-release
+  - rpmfusion-nonfree-release
+
+# Core System Packages
+core_packages:
+  - git
+  - curl
+  - stow
+  - unzip
+  - wget
+  - "@Development Tools"
+  - cargo
+  - rust
+
+# CLI Tools
+cli_packages:
+  - eza
+  - zoxide
+  - bat
+  - fzf
+  - htop
+  - btop
+  - cava
+  - cmatrix
+  - sl
+  - tty-clock
+  - fastfetch
+
+# CLI tools requiring alternative installation
+cli_packages_cargo:
+  - yazi-fm
+
+# Development Tools
+dev_packages:
+  - clang
+  - golang
+  - vim
+  - nodejs
+  - npm
+  - neovim
+  - tmux
+  - docker
+  - gh  # github-cli
+  - yarn
+
+# Development tools requiring alternative installation
+dev_packages_snap:
+  - lazygit
+
+# Shell & Terminal
+shell_packages:
+  - zsh
+  - xsel
+  - wl-clipboard
+
+# Shell packages requiring alternative installation
+shell_packages_cargo:
+  - starship
+
+
+
+# Applications (DNF)
+applications_dnf:
+  - obs-studio
+  - vlc
+  - libreoffice
+
+# Applications (Flatpak)
+applications_flatpak:
+  - com.discordapp.Discord
+  - com.spotify.Client
+  - md.obsidian.Obsidian
+  - com.brave.Browser
+
+# Applications (Snap)
+applications_snap:
+  - code
+  - postman
+  - beekeeper-studio
+
+# Fonts
+fonts:
+  - jetbrains-mono-fonts

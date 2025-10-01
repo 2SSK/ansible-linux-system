@@ -1,7 +1,27 @@
 ---
-- name: Install CLI tools via yay
-  shell: yay -S --noconfirm {{ cli_packages | join(' ') }}
-  args:
-    executable: /bin/bash
-    creates: /usr/bin/eza
-  become_user: "{{ ansible_user }}"
+# Install CLI tools using the common package manager role
+- name: Install CLI tools
+  include_role:
+    name: package-manager
+  vars:
+    package_list: "{{ cli_packages }}"
+    snap_package_list: "{{ cli_packages_snap | default([]) }}"
+    flatpak_package_list: "{{ cli_packages_flatpak | default([]) }}"
+    cargo_package_list: "{{ cli_packages_cargo | default([]) }}"
+
+# Install packages that require manual installation
+- name: Install fastfetch manually (Ubuntu/Debian)
+  block:
+    - name: Download fastfetch
+      get_url:
+        url: "https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.deb"
+        dest: "/tmp/fastfetch.deb"
+      when: ansible_architecture == "x86_64"
+
+    - name: Install fastfetch
+      apt:
+        deb: "/tmp/fastfetch.deb"
+        state: present
+  when: 
+    - current_distro in ['ubuntu', 'debian']
+    - "'fastfetch' in (cli_packages_manual | default([]))"

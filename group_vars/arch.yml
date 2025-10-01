@@ -1,0 +1,77 @@
+# Arch Linux specific package mappings
+distribution: arch
+package_manager:
+  update_cache: "yay -Sy"
+  install: "yay -S --noconfirm"
+  install_aur: "yay -S --noconfirm"
+aur_helper: yay
+
+# Core System Packages
+core_packages:
+  - git
+  - curl
+  - stow
+  - unzip
+  - wget
+  - base-devel
+  - cargo
+
+# CLI Tools
+cli_packages:
+  - eza
+  - zoxide
+  - bat
+  - fzf
+  - htop
+  - btop
+  - cava
+  - cmatrix
+  - sl
+  - tty-clock
+  - yazi
+  - fastfetch
+  - ttyper
+
+# Development Tools
+dev_packages:
+  - clang
+  - go
+  - vim
+  - nodejs
+  - npm
+  - neovim
+  - tmux
+  - docker
+  - github-cli
+  - yarn
+  - lazygit
+  - lazydocker
+
+# Shell & Terminal
+shell_packages:
+  - zsh
+  - xsel
+  - wl-clipboard
+  - starship
+
+
+
+# Applications (AUR)
+applications:
+  - discord
+  - obs-studio
+  - vlc
+  - libreoffice-still
+  - code
+  - cursor-bin
+  - brave-bin
+  - postman-bin
+  - mongodb-compass-bin
+  - obsidian
+  - spotify
+  - spicetify-cli
+  - beekeeper-studio
+
+# Fonts
+fonts:
+  - ttf-jetbrains-mono-nerd
