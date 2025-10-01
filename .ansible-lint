@@ -10,18 +10,17 @@ exclude_paths:
 # Enable all rules by default
 use_default_rules: true
 
+# Skip certain rules that are too strict for this use case
+skip_list:
+  - yaml[line-length]
+  - name[casing]  # Allow various naming conventions
+  - no-changed-when  # Allow tasks without changed_when for simplicity
+
 # Custom rule configuration
 rules:
   # Allow long lines in YAML files
   line-too-long:
     max: 120
 
-  # Skip certain rules that are too strict for this use case
-  skip_list:
-    - yaml[line-length]
-    - name[casing]  # Allow various naming conventions
-    - no-changed-when  # Allow tasks without changed_when for simplicity
-
 # Enable offline mode for CI
 offline: false
-
