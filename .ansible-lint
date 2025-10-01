@@ -25,5 +25,3 @@ rules:
 # Enable offline mode for CI
 offline: false
 
-# Set minimum supported Ansible version
-min_ansible_version: '2.12'
