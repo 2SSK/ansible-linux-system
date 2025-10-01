@@ -2,9 +2,9 @@ name: Test Ansible Playbook
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, dev]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -37,7 +37,7 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        distribution: ['arch', 'fedora', 'debian']
+        distribution: ["arch", "fedora", "debian"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install Ansible
         run: |
@@ -67,26 +67,26 @@ jobs:
       matrix:
         include:
           - distribution: ubuntu
-            version: '22.04'
-            container: 'ubuntu:22.04'
+            version: "22.04"
+            container: "ubuntu:22.04"
           - distribution: ubuntu
-            version: '20.04'
-            container: 'ubuntu:20.04'
+            version: "20.04"
+            container: "ubuntu:20.04"
           - distribution: debian
-            version: '11'
-            container: 'debian:11'
+            version: "11"
+            container: "debian:11"
           - distribution: debian
-            version: '12'
-            container: 'debian:12'
+            version: "12"
+            container: "debian:12"
           - distribution: fedora
-            version: '39'
-            container: 'fedora:39'
+            version: "39"
+            container: "fedora:39"
           - distribution: fedora
-            version: '40'
-            container: 'fedora:40'
+            version: "40"
+            container: "fedora:40"
           - distribution: arch
-            version: 'latest'
-            container: 'archlinux:latest'
+            version: "latest"
+            container: "archlinux:latest"
 
     container:
       image: ${{ matrix.container }}
@@ -150,7 +150,7 @@ jobs:
     needs: [lint, test-syntax]
     strategy:
       matrix:
-        tag_set: 
+        tag_set:
           - name: "core-cli"
             tags: "core,cli"
           - name: "development"
@@ -195,7 +195,7 @@ jobs:
           which curl || echo "WARNING: curl not found" 
           which sudo || echo "WARNING: sudo not found"
           python3 --version || echo "WARNING: python3 not found"
-          
+
       - name: Verify CLI tools installation
         if: contains(matrix.tag_set.tags, 'cli')
         run: |
