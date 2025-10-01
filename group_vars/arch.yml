@@ -1,3 +1,4 @@
+---
 # Arch Linux specific package mappings
 distribution: arch
 package_manager:
@@ -53,8 +54,6 @@ shell_packages:
   - xsel
   - wl-clipboard
   - starship
-
-
 
 # Applications (AUR)
 applications:

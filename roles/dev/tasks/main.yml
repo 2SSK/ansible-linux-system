@@ -22,7 +22,7 @@
       apt:
         deb: "/tmp/gh.deb"
         state: present
-  when: 
+  when:
     - current_distro == 'debian'
     - "'gh' in (dev_packages_manual | default([]))"
 
@@ -63,4 +63,4 @@
   user:
     name: "{{ ansible_user }}"
     groups: docker
-    append: yes
+    append: true

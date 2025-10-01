@@ -3,7 +3,7 @@
   include_role:
     name: package-manager
   vars:
-    package_list: 
+    package_list:
       - "{{ ssh_package }}"
 
 - name: Start and enable SSH service
@@ -17,7 +17,7 @@
     repo: https://github.com/2SSK/dot-files.git
     dest: /home/{{ ansible_user }}/dotfiles
     version: main
-    force: yes
+    force: true
   become_user: "{{ ansible_user }}"
 
 - name: Stow dotfiles
@@ -32,5 +32,5 @@
     repo: https://github.com/2SSK/Wallpaper-bank.git
     dest: /home/{{ ansible_user }}/Wallpaper-bank
     version: main
-    force: yes
+    force: true
   become_user: "{{ ansible_user }}"

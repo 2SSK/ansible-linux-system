@@ -22,6 +22,6 @@
       apt:
         deb: "/tmp/fastfetch.deb"
         state: present
-  when: 
-    - current_distro in ['ubuntu', 'debian']
-    - "'fastfetch' in (cli_packages_manual | default([]))"
+      when:
+        - current_distro == 'debian'
+        - "'fastfetch' in (cli_packages_manual | default([]))"

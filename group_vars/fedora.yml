@@ -1,5 +1,7 @@
 # Fedora specific package mappings
-distribution: fedora
+---
+# Package definitions for Fedora
+current_distro: fedora
 package_manager:
   update_cache: "dnf check-update || true"
   install: "dnf install -y"
@@ -66,8 +68,6 @@ shell_packages:
 # Shell packages requiring alternative installation
 shell_packages_cargo:
   - starship
-
-
 
 # Applications (DNF)
 applications_dnf:

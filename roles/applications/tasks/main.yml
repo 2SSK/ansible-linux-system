@@ -23,4 +23,4 @@
     package_list: "{{ applications_apt | default([]) }}"
     snap_package_list: "{{ applications_snap | default([]) }}"
     flatpak_package_list: "{{ applications_flatpak | default([]) }}"
-  when: current_distro in ['ubuntu', 'debian']
+  when: current_distro == 'debian'

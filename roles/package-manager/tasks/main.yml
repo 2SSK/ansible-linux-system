@@ -11,7 +11,7 @@
   args:
     executable: /bin/bash
   become_user: "{{ ansible_user }}"
-  when: 
+  when:
     - current_distro == 'arch'
     - package_list is defined
     - package_list | length > 0
@@ -20,7 +20,7 @@
   dnf:
     name: "{{ package_list }}"
     state: present
-  when: 
+  when:
     - current_distro == 'fedora'
     - package_list is defined
     - package_list | length > 0
@@ -29,9 +29,9 @@
   apt:
     name: "{{ package_list }}"
     state: present
-    update_cache: yes
-  when: 
-    - current_distro in ['ubuntu', 'debian']
+    update_cache: true
+  when:
+    - current_distro == 'debian'
     - package_list is defined
     - package_list | length > 0
 
@@ -40,8 +40,8 @@
   snap:
     name: "{{ snap_package_list }}"
     state: present
-  when: 
-    - current_distro in ['fedora', 'ubuntu', 'debian']
+  when:
+    - current_distro in ['fedora', 'debian']
     - snap_package_list is defined
     - snap_package_list | length > 0
 
@@ -50,8 +50,8 @@
   flatpak:
     name: "{{ flatpak_package_list }}"
     state: present
-  when: 
-    - current_distro in ['fedora', 'ubuntu', 'debian']
+  when:
+    - current_distro in ['fedora', 'debian']
     - flatpak_package_list is defined
     - flatpak_package_list | length > 0
 
@@ -60,6 +60,6 @@
   shell: "cargo install {{ item }}"
   loop: "{{ cargo_package_list | default([]) }}"
   become_user: "{{ ansible_user }}"
-  when: 
+  when:
     - cargo_package_list is defined
     - cargo_package_list | length > 0

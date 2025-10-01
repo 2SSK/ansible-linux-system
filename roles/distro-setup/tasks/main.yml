@@ -1,10 +1,11 @@
 ---
 - name: Detect distribution
   set_fact:
-    detected_distro: "{{ 'arch' if ansible_distribution == 'Archlinux' else 
-                         'fedora' if ansible_distribution == 'Fedora' else
-                         'debian' if ansible_distribution in ['Ubuntu', 'Debian', 'Pop', 'Linux Mint', 'elementary OS'] else
-                         'unsupported' }}"
+    detected_distro: >-
+      {{ 'arch' if ansible_distribution == 'Archlinux' else
+         'fedora' if ansible_distribution == 'Fedora' else
+         'debian' if ansible_distribution in ['Ubuntu', 'Debian', 'Pop', 'Linux Mint', 'elementary OS'] else
+         'unsupported' }}
 
 - name: Display detected distribution
   debug:
@@ -41,7 +42,7 @@
       git:
         repo: https://aur.archlinux.org/yay-bin.git
         dest: /tmp/yay-bin
-        force: yes
+        force: true
       become_user: "{{ ansible_user }}"
       when: yay_check.rc != 0
 

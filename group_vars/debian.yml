@@ -1,6 +1,8 @@
 # Debian/Ubuntu shared package mappings
 # Works for Debian, Ubuntu, and derivatives (Mint, Pop!_OS, Elementary, etc.)
-distribution: debian
+---
+# Package definitions for Debian/Ubuntu
+current_distro: debian
 package_manager:
   update_cache: "apt update"
   install: "apt install -y"
@@ -73,8 +75,6 @@ shell_packages:
   - zsh
   - xsel
   - wl-clipboard
-
-
 
 # Applications (APT)
 applications_apt:
